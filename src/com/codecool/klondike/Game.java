@@ -2,6 +2,7 @@ package com.codecool.klondike;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
@@ -88,7 +89,15 @@ public class Game extends Pane {
     };
 
     public boolean isGameWon() {
-        //TODO
+        int numOfFullPiles = 0;
+        for(Pile foundation: foundationPiles) {
+            if(foundation.numOfCards() == 13) {
+                numOfFullPiles++;
+            }
+        }
+        if(numOfFullPiles == 4) {
+            return true;
+        }
         return false;
     }
 
@@ -106,7 +115,12 @@ public class Game extends Pane {
     }
 
     public void refillStockFromDiscard() {
-        //TODO
+        ObservableList<Card> discardedCards = discardPile.getCards();
+        for (int i = discardedCards.size() - 1; i > 0; i--) {
+            discardedCards.get(i).flip();
+            stockPile.addCard(discardedCards.get(i));
+        }
+        discardPile.clear();
         System.out.println("Stock refilled from discard pile.");
     }
 
