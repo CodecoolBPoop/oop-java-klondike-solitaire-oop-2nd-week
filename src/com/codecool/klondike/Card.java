@@ -5,6 +5,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 
+import java.sql.SQLOutput;
 import java.util.*;
 
 public class Card extends ImageView {
@@ -46,7 +47,7 @@ public class Card extends ImageView {
     }
 
     public String getShortName() {
-        return "S" + suit + "R" + rank;
+        return "S" + suit.suitId + "R" + rank.rankId;
     }
 
     public DropShadow getDropShadow() {
