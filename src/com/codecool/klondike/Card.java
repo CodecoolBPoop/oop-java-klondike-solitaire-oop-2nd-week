@@ -8,7 +8,9 @@ import javafx.scene.paint.Color;
 import java.util.*;
 
 public class Card extends ImageView {
-
+    private suitType suit;
+    private int suitId = suit.showSuitId();
+    private String suitName = suit.showSuitName();
     private int suit;
     private int rank;
     private boolean faceDown;
@@ -99,7 +101,7 @@ public class Card extends ImageView {
     public static void loadCardImages() {
         cardBackImage = new Image("card_images/card_back.png");
         String suitName = "";
-        for (int suit = 1; suit < 5; suit++) {
+        for (int i = suit.showSuitId; suit < 5; suit++) {
             switch (suit) {
                 case 1:
                     suitName = "hearts";
@@ -123,18 +125,53 @@ public class Card extends ImageView {
         }
     }
 
-    public enum suit {
-        '1',
-        2,
-        3,
-        4
+    public enum SuitType {
+        HEARTS(1, "hearts"),
+        DIAMONDS(2, "diamonds"),
+        SPADES(3, "spades"),
+        CLUBS(4, "clubs");
+
+        int suitId;
+        String suitName;
+        SuitType(int s, String sn) {
+            suitId = s;
+            suitName = sn;
+        }
+
+        int showSuitId() {
+            return suitId;
+        }
+
+        String showSuitName() {
+            return suitName;
+        }
+
+
     }
 
-    public enum rank {
-        STOCK,
-        DISCARD,
-        FOUNDATION,
-        TABLEAU
+    public enum RankType {
+        ACE (1),
+        TWO(2),
+        THREE(3),
+        FOUR(4),
+        FIVE(5),
+        SIX(6),
+        SEVEN(7),
+        EIGHT(8),
+        NINE(9),
+        TEN(10),
+        JACK(11),
+        QUEEN(12),
+        KING(13);
     }
+    int rankId;
+    RankType(int r) {
+        rankId = r;
+    }
+
+    int showRankId() {
+        return rankId;
+    }
+
 
 }
