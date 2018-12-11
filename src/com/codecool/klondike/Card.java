@@ -123,4 +123,18 @@ public class Card extends ImageView {
         }
     }
 
+    public enum suit {
+        '1',
+        2,
+        3,
+        4
+    }
+
+    public enum rank {
+        STOCK,
+        DISCARD,
+        FOUNDATION,
+        TABLEAU
+    }
+
 }
