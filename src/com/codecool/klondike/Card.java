@@ -78,8 +78,12 @@ public class Card extends ImageView {
     }
 
     public static boolean isOppositeColor(Card card1, Card card2) {
-        //TODO
-        return true;
+        if((card1.suit.suitName.equals("hearts") || card1.suit.suitName.equals("diamonds")) &&
+            (card2.suit.suitName.equals("clubs") || card2.suit.suitName.equals("spades") )) {
+                return true;
+        } else {
+            return false;
+        }
     }
 
     public static boolean isSameSuit(Card card1, Card card2) {
