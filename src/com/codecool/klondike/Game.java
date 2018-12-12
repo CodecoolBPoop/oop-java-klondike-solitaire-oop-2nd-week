@@ -78,7 +78,9 @@ public class Game extends Pane {
             return;
         Card card = (Card) e.getSource();
         Pile pile = getValidIntersectingPile(card, tableauPiles);
-        //TODO
+        if (pile == null) {
+            pile = getValidIntersectingPile(card, foundationPiles);
+        }
         if (pile != null) {
             handleValidMove(card, pile);
         } else {
@@ -125,7 +127,7 @@ public class Game extends Pane {
 
     public boolean isMoveValid(Card card, Pile destPile) {
         Card topCard = destPile.getTopCard();
-        if(destPile.isEmpty()) {
+        if(tableauPiles.contains(destPile) && destPile.isEmpty()) {
             if(card.getRank() == 13) {
                 return true;
             } else {
