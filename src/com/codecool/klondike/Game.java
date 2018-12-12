@@ -69,16 +69,18 @@ public class Game extends Pane {
             return;
         double offsetX = e.getSceneX() - dragStartX;
         double offsetY = e.getSceneY() - dragStartY;
+        draggedCards.clear();
 
         if (card.getContainingPile().getPileType() == Pile.PileType.TABLEAU) {
             for (int i = cards.indexOf(card); i < cards.size(); i++) {
+                Card draggedCard = cards.get(i);
                 draggedCards.add(cards.get(i));
-                card.getDropShadow().setRadius(20);
-                card.getDropShadow().setOffsetX(10);
-                card.getDropShadow().setOffsetY(10);
-                card.toFront();
-                card.setTranslateX(offsetX);
-                card.setTranslateY(offsetY);
+                draggedCard.getDropShadow().setRadius(20);
+                draggedCard.getDropShadow().setOffsetX(10);
+                draggedCard.getDropShadow().setOffsetY(10);
+                draggedCard.toFront();
+                draggedCard.setTranslateX(offsetX);
+                draggedCard.setTranslateY(offsetY + (10 * i));
             }
         } else {
             draggedCards.add(card);
