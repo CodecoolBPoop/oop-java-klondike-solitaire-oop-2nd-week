@@ -3,9 +3,12 @@ package com.codecool.klondike;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundImage;
@@ -106,6 +109,7 @@ public class Game extends Pane {
         deck = Card.createNewDeck();
         initPiles();
         dealCards();
+        initButtons();
     }
 
     public void addMouseEventHandlers(Card card) {
@@ -180,6 +184,37 @@ public class Game extends Pane {
         draggedCards.clear();
     }
 
+    private void initButtons() {
+
+        //Image restartImage = new Image("restart.png");
+        Button restartButton = new Button("Restart"); //new ImageView(restartImage));
+        restartButton.setPrefSize(50, 50);
+        restartButton.setLayoutX(20);
+        restartButton.setLayoutY(20);
+        restartButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                stockPile.clear();
+                discardPile.clear();
+                for (Pile pile : foundationPiles) {
+                    pile.clear();
+                }
+                for (Pile pile : tableauPiles) {
+                    pile.clear();
+                }
+                for (Card card : deck) {
+                    getChildren().remove(card);
+                    if (!card.isFaceDown()) {
+                        card.flip();
+                    }
+                }
+                dealCards();
+            }
+        });
+        getChildren().add(restartButton);
+
+
+    }
 
     private void initPiles() {
         stockPile = new Pile(Pile.PileType.STOCK, "Stock", STOCK_GAP);
@@ -220,6 +255,7 @@ public class Game extends Pane {
             stockPile.addCard(card);
             addMouseEventHandlers(card);
             getChildren().add(card);
+
         });
 
     }
