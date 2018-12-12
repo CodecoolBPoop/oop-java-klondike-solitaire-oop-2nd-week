@@ -73,7 +73,7 @@ public class Game extends Pane {
         double offsetY = e.getSceneY() - dragStartY;
         draggedCards.clear();
 
-        if (card.getContainingPile().getPileType() == Pile.PileType.TABLEAU) {
+        if (card.getContainingPile().getPileType() == Pile.PileType.TABLEAU && !card.isFaceDown()) {
             for (int i = cards.indexOf(card); i < cards.size(); i++) {
                 Card draggedCard = cards.get(i);
                 draggedCards.add(cards.get(i));
@@ -84,7 +84,7 @@ public class Game extends Pane {
                 draggedCard.setTranslateX(offsetX);
                 draggedCard.setTranslateY(offsetY + (10 * i));
             }
-        } else {
+        } else if (!card.isFaceDown()){
             draggedCards.add(card);
             card.getDropShadow().setRadius(20);
             card.getDropShadow().setOffsetX(10);
@@ -104,6 +104,7 @@ public class Game extends Pane {
         Pile pile = getValidIntersectingPile(card, tableauPiles);
         if (pile == null) {
             pile = getValidIntersectingPile(card, foundationPiles);
+
         }
         if (pile != null) {
             handleValidMove(card, pile);
@@ -205,7 +206,9 @@ public class Game extends Pane {
         System.out.println(msg);
         MouseUtil.slideToDest(draggedCards, destPile);
         draggedCards.clear();
+
     }
+
 
     private void initButtons() {
 
