@@ -125,8 +125,12 @@ public class Game extends Pane {
 
     public boolean isMoveValid(Card card, Pile destPile) {
         Card topCard = destPile.getTopCard();
-        if(destPile.isEmpty() && card.getRank() == 13) {
-            return true;
+        if(destPile.isEmpty()) {
+            if(card.getRank() == 13) {
+                return true;
+            } else {
+                return false;
+            }
         } else if(tableauPiles.contains(destPile)) {
             if (Card.isOppositeColor(card, topCard) && topCard.getRank() - 1 == card.getRank()) {
                 return true;
