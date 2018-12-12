@@ -40,7 +40,8 @@ public class Game extends Pane {
 
     private EventHandler<MouseEvent> onMouseClickedHandler = e -> {
         Card card = (Card) e.getSource();
-        if (card.getContainingPile().getPileType() == Pile.PileType.STOCK) {
+        ObservableList<Card> cards = card.getContainingPile().getCards();
+        if (card.getContainingPile().getPileType() == Pile.PileType.STOCK && cards.indexOf(card) == cards.size()-1) {
             card.moveToPile(discardPile);
             card.flip();
             card.setMouseTransparent(false);
@@ -60,20 +61,35 @@ public class Game extends Pane {
     private EventHandler<MouseEvent> onMouseDraggedHandler = e -> {
         Card card = (Card) e.getSource();
         Pile activePile = card.getContainingPile();
+        ObservableList<Card> cards = card.getContainingPile().getCards();
         if (activePile.getPileType() == Pile.PileType.STOCK)
+            return;
+        if (card.getContainingPile().getPileType() == Pile.PileType.DISCARD && cards.indexOf(card) != cards.size()-1)
             return;
         double offsetX = e.getSceneX() - dragStartX;
         double offsetY = e.getSceneY() - dragStartY;
 
-        draggedCards.add(card);
+        if (card.getContainingPile().getPileType() == Pile.PileType.TABLEAU) {
+            for (int i = cards.indexOf(card); i < cards.size(); i++) {
+                draggedCards.add(cards.get(i));
+                card.getDropShadow().setRadius(20);
+                card.getDropShadow().setOffsetX(10);
+                card.getDropShadow().setOffsetY(10);
+                card.toFront();
+                card.setTranslateX(offsetX);
+                card.setTranslateY(offsetY);
+            }
+        } else {
+            draggedCards.add(card);
+            card.getDropShadow().setRadius(20);
+            card.getDropShadow().setOffsetX(10);
+            card.getDropShadow().setOffsetY(10);
+            card.toFront();
+            card.setTranslateX(offsetX);
+            card.setTranslateY(offsetY);
+        }
 
-        card.getDropShadow().setRadius(20);
-        card.getDropShadow().setOffsetX(10);
-        card.getDropShadow().setOffsetY(10);
 
-        card.toFront();
-        card.setTranslateX(offsetX);
-        card.setTranslateY(offsetY);
     };
 
     private EventHandler<MouseEvent> onMouseReleasedHandler = e -> {
