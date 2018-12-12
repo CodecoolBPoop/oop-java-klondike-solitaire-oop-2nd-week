@@ -20,6 +20,7 @@ import javafx.scene.layout.Pane;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Collections;
 
 public class Game extends Pane {
 
@@ -267,8 +268,22 @@ public class Game extends Pane {
     }
 
     public void dealCards() {
-        Iterator<Card> deckIterator = deck.iterator();
-        //TODO
+        Collections.shuffle(deck);
+        List<Card> tableauCards = deck.subList(0, 28);
+        List<Card> stockCards = deck.subList(28, 52);
+        Iterator<Card> tableauIterator = tableauCards.iterator();
+        int[] numOfCardsPerPile = {1, 2, 3, 4, 5, 6, 7};
+        int[] indexOfPile = {0};
+        tableauIterator.forEachRemaining(card -> {
+            tableauPiles.get(indexOfPile[0]).addCard(card);
+            addMouseEventHandlers(card);
+            getChildren().add(card);
+            if (tableauPiles.get(indexOfPile[0]).getCards().size() == numOfCardsPerPile[indexOfPile[0]]) {
+                card.flip();
+                indexOfPile[0]++;
+            }
+        });
+        Iterator<Card> deckIterator = stockCards.iterator();
         deckIterator.forEachRemaining(card -> {
             stockPile.addCard(card);
             addMouseEventHandlers(card);
