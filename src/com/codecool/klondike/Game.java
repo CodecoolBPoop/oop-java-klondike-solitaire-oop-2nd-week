@@ -62,7 +62,6 @@ public class Game extends Pane {
         double offsetX = e.getSceneX() - dragStartX;
         double offsetY = e.getSceneY() - dragStartY;
 
-        draggedCards.clear();
         draggedCards.add(card);
 
         card.getDropShadow().setRadius(20);
@@ -84,7 +83,7 @@ public class Game extends Pane {
             handleValidMove(card, pile);
         } else {
             draggedCards.forEach(MouseUtil::slideBack);
-            draggedCards = null;
+            draggedCards.clear();
         }
     };
 
@@ -126,7 +125,7 @@ public class Game extends Pane {
 
     public boolean isMoveValid(Card card, Pile destPile) {
         Card topCard = destPile.getTopCard();
-        if(tableauPiles.isEmpty() && card.getRank() == 13) {
+        if(destPile.isEmpty() && card.getRank() == 13) {
             return true;
         } else if(tableauPiles.contains(destPile)) {
             if (Card.isOppositeColor(card, topCard) && topCard.getRank() - 1 == card.getRank()) {

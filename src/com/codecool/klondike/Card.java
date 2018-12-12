@@ -78,8 +78,7 @@ public class Card extends ImageView {
     }
 
     public static boolean isOppositeColor(Card card1, Card card2) {
-        if((card1.suit.suitName.equals("hearts") || card1.suit.suitName.equals("diamonds")) &&
-            (card2.suit.suitName.equals("clubs") || card2.suit.suitName.equals("spades") )) {
+        if(!card1.suit.color.equals(card2.suit.color)) {
                 return true;
         } else {
             return false;
@@ -113,17 +112,19 @@ public class Card extends ImageView {
     }
 
     public enum SuitType {
-        HEARTS(1, "hearts"),
-        DIAMONDS(2, "diamonds"),
-        SPADES(3, "spades"),
-        CLUBS(4, "clubs");
+        HEARTS(1, "hearts", "red"),
+        DIAMONDS(2, "diamonds", "red"),
+        SPADES(3, "spades", "black"),
+        CLUBS(4, "clubs", "black");
 
         int suitId;
+        String color;
         String suitName;
 
-        SuitType(int s, String sn) {
+        SuitType(int s, String sn, String c) {
             this.suitId = s;
             this.suitName = sn;
+            this.color = c;
         }
 
         int showSuitId() {
