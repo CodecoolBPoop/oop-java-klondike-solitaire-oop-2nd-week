@@ -156,8 +156,10 @@ public class Game extends Pane {
         for (Pile pile : piles) {
             if (!pile.equals(card.getContainingPile()) &&
                     isOverPile(card, pile) &&
-                    isMoveValid(card, pile))
+                    isMoveValid(card, pile)) {
                 result = pile;
+                return result;
+            }
         }
         return result;
     }
