@@ -5,13 +5,13 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 
+import java.sql.SQLOutput;
 import java.util.*;
 
 public class Card extends ImageView {
-
-    private int suit;
-    private int rank;
+    private SuitType suit;
     private boolean faceDown;
+    private RankType rank;
 
     private Image backFace;
     private Image frontFace;
@@ -24,8 +24,8 @@ public class Card extends ImageView {
     public static final int HEIGHT = 215;
 
     public Card(int suit, int rank, boolean faceDown) {
-        this.suit = suit;
-        this.rank = rank;
+        this.suit = SuitType.getSuitById(suit);
+        this.rank = RankType.getRankById(rank);
         this.faceDown = faceDown;
         this.dropShadow = new DropShadow(2, Color.gray(0, 0.75));
         backFace = cardBackImage;
@@ -35,11 +35,11 @@ public class Card extends ImageView {
     }
 
     public int getSuit() {
-        return suit;
+        return suit.showSuitId();
     }
 
     public int getRank() {
-        return rank;
+        return rank.showRankId();
     }
 
     public boolean isFaceDown() {
@@ -47,7 +47,7 @@ public class Card extends ImageView {
     }
 
     public String getShortName() {
-        return "S" + suit + "R" + rank;
+        return "S" + suit.suitId + "R" + rank.rankId;
     }
 
     public DropShadow getDropShadow() {
@@ -74,12 +74,15 @@ public class Card extends ImageView {
 
     @Override
     public String toString() {
-        return "The " + "Rank" + rank + " of " + "Suit" + suit;
+        return "The " + "Rank" + rank.rankId + " of " + "Suit" + suit.suitId;
     }
 
     public static boolean isOppositeColor(Card card1, Card card2) {
-        //TODO
-        return true;
+        if(!card1.suit.color.equals(card2.suit.color)) {
+                return true;
+        } else {
+            return false;
+        }
     }
 
     public static boolean isSameSuit(Card card1, Card card2) {
@@ -98,43 +101,90 @@ public class Card extends ImageView {
 
     public static void loadCardImages() {
         cardBackImage = new Image("card_images/card_back.png");
-        String suitName = "";
-        for (int suit = 1; suit < 5; suit++) {
-            switch (suit) {
-                case 1:
-                    suitName = "hearts";
-                    break;
-                case 2:
-                    suitName = "diamonds";
-                    break;
-                case 3:
-                    suitName = "spades";
-                    break;
-                case 4:
-                    suitName = "clubs";
-                    break;
-            }
-            for (int rank = 1; rank < 14; rank++) {
-                String cardName = suitName + rank;
-                String cardId = "S" + suit + "R" + rank;
+        for (SuitType suit: SuitType.values()) {
+            for (RankType rank: RankType.values()) {
+                String cardName = suit.suitName + rank.rankId;
+                String cardId = "S" + suit.suitId + "R" + rank.rankId;
                 String imageFileName = "card_images/" + cardName + ".png";
                 cardFaceImages.put(cardId, new Image(imageFileName));
             }
         }
     }
 
-    public enum suit {
-        '1',
-        2,
-        3,
-        4
+    public enum SuitType {
+        HEARTS(1, "hearts", "red"),
+        DIAMONDS(2, "diamonds", "red"),
+        SPADES(3, "spades", "black"),
+        CLUBS(4, "clubs", "black");
+
+        int suitId;
+        String color;
+        String suitName;
+
+        SuitType(int s, String sn, String c) {
+            this.suitId = s;
+            this.suitName = sn;
+            this.color = c;
+        }
+
+        int showSuitId() {
+            return suitId;
+        }
+
+        String showSuitName() {
+            return suitName;
+        }
+
+        private static final Map<Integer, SuitType> BY_ID_MAP = new LinkedHashMap<>();
+        static {
+            for (SuitType st: SuitType.values()) {
+                    BY_ID_MAP.put(st.suitId, st);
+            }
+        }
+
+        public static SuitType getSuitById(int id) {
+            return BY_ID_MAP.get(id);
+        }
+
+
     }
 
-    public enum rank {
-        STOCK,
-        DISCARD,
-        FOUNDATION,
-        TABLEAU
-    }
+    public enum RankType {
+        ACE(1),
+        TWO(2),
+        THREE(3),
+        FOUR(4),
+        FIVE(5),
+        SIX(6),
+        SEVEN(7),
+        EIGHT(8),
+        NINE(9),
+        TEN(10),
+        JACK(11),
+        QUEEN(12),
+        KING(13);
 
+        int rankId;
+
+        RankType(int r) {
+            rankId = r;
+        }
+
+        int showRankId() {
+            return rankId;
+        }
+
+        private static final Map<Integer, RankType> BY_ID_MAP = new LinkedHashMap<>();
+        static {
+            for (RankType rt: RankType.values()) {
+                BY_ID_MAP.put(rt.rankId, rt);
+            }
+        }
+
+        public static RankType getRankById(int id) {
+            return BY_ID_MAP.get(id);
+        }
+
+
+    }
 }
