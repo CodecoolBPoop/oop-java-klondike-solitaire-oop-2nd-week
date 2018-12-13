@@ -58,6 +58,15 @@ public class Game extends Pane {
         refillStockFromDiscard();
     };
 
+    private ListChangeListener<Card> gameEndCheck = new ListChangeListener<Card>() {
+        @Override
+        public void onChanged(Change<? extends Card> c) {
+            if (c.wasAdded()) {
+                ifisGameWon();
+            }
+        }
+    };
+
     private EventHandler<MouseEvent> onMousePressedHandler = e -> {
         dragStartX = e.getSceneX();
         dragStartY = e.getSceneY();
@@ -132,6 +141,9 @@ public class Game extends Pane {
     public Game() {
         deck = Card.createNewDeck();
         initPiles();
+        for (Pile pile: foundationPiles) {
+            addListEventHandler(pile);
+        }
         dealCards();
         initButtons();
     }
@@ -141,6 +153,10 @@ public class Game extends Pane {
         card.setOnMouseDragged(onMouseDraggedHandler);
         card.setOnMouseReleased(onMouseReleasedHandler);
         card.setOnMouseClicked(onMouseClickedHandler);
+    }
+
+    public void addListEventHandler(Pile foundation) {
+        foundation.getCards().addListener(gameEndCheck);
     }
 
     public void refillStockFromDiscard() {
@@ -229,14 +245,13 @@ public class Game extends Pane {
 
     private void initButtons() {
 
-        //Image restartImage = new Image("restart.png");
         Image restartImage = new Image(getClass().getResourceAsStream("/button/restart.png"));
         ImageView imageView = new ImageView(restartImage);
         imageView.setFitWidth(50);
         imageView.setFitHeight(50);
-        Button restartButton = new Button("Restart");
+        Button restartButton = new Button("RESTART");
         restartButton.setGraphic(imageView);
-        restartButton.setPrefSize(50, 50);
+        restartButton.setPrefSize(80, 80);
         restartButton.setContentDisplay(ContentDisplay.TOP);
         restartButton.setLayoutX(1320);
         restartButton.setLayoutY(20);
