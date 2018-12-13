@@ -166,7 +166,7 @@ public class Game extends Pane {
         if(numOfFullPiles == 4) {
             return true;
         }
-        return true;
+        return false;
     }
 
     public Game() {
