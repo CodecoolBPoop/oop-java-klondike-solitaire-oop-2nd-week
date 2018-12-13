@@ -229,9 +229,14 @@ public class Game extends Pane {
     private void initButtons() {
 
         //Image restartImage = new Image("restart.png");
-        Button restartButton = new Button("Restart"); //new ImageView(restartImage));
+        Image restartImage = new Image(getClass().getResourceAsStream("/button/restart.png"));
+        ImageView imageView = new ImageView(restartImage);
+        imageView.setFitWidth(50);
+        imageView.setFitHeight(50);
+        Button restartButton = new Button("");
+        restartButton.setGraphic(imageView);
         restartButton.setPrefSize(50, 50);
-        restartButton.setLayoutX(20);
+        restartButton.setLayoutX(1320);
         restartButton.setLayoutY(20);
         restartButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
