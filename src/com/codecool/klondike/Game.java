@@ -65,8 +65,8 @@ public class Game extends Pane {
                 if (c.wasAdded()) {
                     if (isGameWon()) {
                         ButtonType yes = new ButtonType("Yes", ButtonBar.ButtonData.YES);
-                        ButtonType cancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
-                        Alert alert = new Alert(Alert.AlertType.CONFIRMATION,"Game Over", yes, cancel);
+                        ButtonType no = new ButtonType("No", ButtonBar.ButtonData.NO);
+                        Alert alert = new Alert(Alert.AlertType.CONFIRMATION,"Game Over", yes, no);
                         alert.setTitle("");
                         alert.setHeaderText("Congratulation! You have won.");
                         alert.setContentText("Do you want to play again?");
