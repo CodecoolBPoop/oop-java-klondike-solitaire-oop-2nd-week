@@ -1,14 +1,12 @@
 package com.codecool.klondike;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.ContentDisplay;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -19,9 +17,11 @@ import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.Pane;
 
+
 import java.util.*;
 
 import javafx.*;
+import jdk.internal.org.objectweb.asm.tree.TryCatchBlockNode;
 
 public class Game extends Pane {
 
@@ -58,10 +58,42 @@ public class Game extends Pane {
     };
 
     private ListChangeListener<Card> gameEndCheck = new ListChangeListener<Card>() {
+
         @Override
         public void onChanged(Change<? extends Card> c) {
-            if (c.wasAdded()) {
-                ifisGameWon();
+            while (c.next()) {
+                if (c.wasAdded()) {
+                    if (isGameWon()) {
+                        ButtonType yes = new ButtonType("Yes", ButtonBar.ButtonData.YES);
+                        ButtonType cancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+                        Alert alert = new Alert(Alert.AlertType.CONFIRMATION,"Game Over", yes, cancel);
+                        alert.setTitle("");
+                        alert.setHeaderText("Congratulation! You have won.");
+                        alert.setContentText("Do you want to play again?");
+                        Platform.runLater(() -> {
+                            Optional<ButtonType> result = alert.showAndWait();
+                            if (result.get() == yes) {
+                                stockPile.clear();
+                                discardPile.clear();
+                                for (Pile pile : foundationPiles) {
+                                    pile.clear();
+                                }
+                                for (Pile pile : tableauPiles) {
+                                    pile.clear();
+                                }
+                                for (Card crd : deck) {
+                                    getChildren().remove(crd);
+                                    if (!crd.isFaceDown()) {
+                                        crd.flip();
+                                    }
+                                }
+                                dealCards();
+                            } else {
+                                System.exit(1);
+                            }
+                        });
+                    }
+                }
             }
         }
     };
@@ -223,36 +255,6 @@ public class Game extends Pane {
         System.out.println(msg);
         MouseUtil.slideToDest(draggedCards, destPile);
         draggedCards.clear();
-        if(isGameWon()) {
-
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("");
-            alert.setHeaderText("Look, a Confirmation Dialog");
-            alert.setContentText("Are you ok with this?");
-
-            Optional<ButtonType> result = alert.showAndWait();
-            if (result.get() == ButtonType.OK){
-                stockPile.clear();
-                discardPile.clear();
-                for (Pile pile : foundationPiles) {
-                    pile.clear();
-                }
-                for (Pile pile : tableauPiles) {
-                    pile.clear();
-                }
-                for (Card crd : deck) {
-                    getChildren().remove(crd);
-                    if (!crd.isFaceDown()) {
-                        crd.flip();
-                    }
-                }
-                dealCards();
-            } else {
-                // ... user chose CANCEL or closed the dialog
-            }
-
-            return;
-        }
     }
 
 
