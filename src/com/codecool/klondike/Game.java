@@ -1,12 +1,12 @@
 package com.codecool.klondike;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -17,11 +17,11 @@ import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.Pane;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Collections;
+
+import java.util.*;
+
 import javafx.*;
+import jdk.internal.org.objectweb.asm.tree.TryCatchBlockNode;
 
 public class Game extends Pane {
 
@@ -55,6 +55,47 @@ public class Game extends Pane {
 
     private EventHandler<MouseEvent> stockReverseCardsHandler = e -> {
         refillStockFromDiscard();
+    };
+
+    private ListChangeListener<Card> gameEndCheck = new ListChangeListener<Card>() {
+
+        @Override
+        public void onChanged(Change<? extends Card> c) {
+            while (c.next()) {
+                if (c.wasAdded()) {
+                    if (isGameWon()) {
+                        ButtonType yes = new ButtonType("Yes", ButtonBar.ButtonData.YES);
+                        ButtonType cancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+                        Alert alert = new Alert(Alert.AlertType.CONFIRMATION,"Game Over", yes, cancel);
+                        alert.setTitle("");
+                        alert.setHeaderText("Congratulation! You have won.");
+                        alert.setContentText("Do you want to play again?");
+                        Platform.runLater(() -> {
+                            Optional<ButtonType> result = alert.showAndWait();
+                            if (result.get() == yes) {
+                                stockPile.clear();
+                                discardPile.clear();
+                                for (Pile pile : foundationPiles) {
+                                    pile.clear();
+                                }
+                                for (Pile pile : tableauPiles) {
+                                    pile.clear();
+                                }
+                                for (Card crd : deck) {
+                                    getChildren().remove(crd);
+                                    if (!crd.isFaceDown()) {
+                                        crd.flip();
+                                    }
+                                }
+                                dealCards();
+                            } else {
+                                System.exit(1);
+                            }
+                        });
+                    }
+                }
+            }
+        }
     };
 
     private EventHandler<MouseEvent> onMousePressedHandler = e -> {
@@ -131,6 +172,9 @@ public class Game extends Pane {
     public Game() {
         deck = Card.createNewDeck();
         initPiles();
+        for (Pile pile: foundationPiles) {
+            addListEventHandler(pile);
+        }
         dealCards();
         initButtons();
     }
@@ -142,14 +186,18 @@ public class Game extends Pane {
         card.setOnMouseClicked(onMouseClickedHandler);
     }
 
+    public void addListEventHandler(Pile foundation) {
+        foundation.getCards().addListener(gameEndCheck);
+    }
+
     public void refillStockFromDiscard() {
         ObservableList<Card> discardedCards = discardPile.getCards();
-        for (int i = discardedCards.size() - 1; i > 0; i--) {
+        for (int i = discardedCards.size() - 1; i >= 0; i--) {
             discardedCards.get(i).flip();
             stockPile.addCard(discardedCards.get(i));
         }
         discardPile.clear();
-        System.out.println("Stock refilled from discard pile.");
+        System.out.println("Stock refilled from discard pile." + stockPile.getCards().size());
     }
 
     public boolean isMoveValid(Card card, Pile destPile) {
@@ -207,31 +255,21 @@ public class Game extends Pane {
         System.out.println(msg);
         MouseUtil.slideToDest(draggedCards, destPile);
         draggedCards.clear();
-        if(isGameWon()) {
-            /*
-            Alert alert = new Alert(AlertType.CONFIRMATION);
-            alert.setTitle("Confirmation Dialog");
-            alert.setHeaderText("Look, a Confirmation Dialog");
-            alert.setContentText("Are you ok with this?");
-
-            Optional<ButtonType> result = alert.showAndWait();
-            if (result.get() == ButtonType.OK){
-                // ... user chose OK
-            } else {
-                // ... user chose CANCEL or closed the dialog
-            }
-            */
-            return;
-        }
     }
 
 
     private void initButtons() {
 
         //Image restartImage = new Image("restart.png");
-        Button restartButton = new Button("Restart"); //new ImageView(restartImage));
-        restartButton.setPrefSize(50, 50);
-        restartButton.setLayoutX(20);
+        Image restartImage = new Image(getClass().getResourceAsStream("/button/restart.png"));
+        ImageView imageView = new ImageView(restartImage);
+        imageView.setFitWidth(50);
+        imageView.setFitHeight(50);
+        Button restartButton = new Button("RESTART");
+        restartButton.setGraphic(imageView);
+        restartButton.setPrefSize(80, 80);
+        restartButton.setContentDisplay(ContentDisplay.TOP);
+        restartButton.setLayoutX(1320);
         restartButton.setLayoutY(20);
         restartButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
