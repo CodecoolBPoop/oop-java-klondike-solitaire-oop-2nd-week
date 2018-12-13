@@ -7,6 +7,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ContentDisplay;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -233,9 +234,10 @@ public class Game extends Pane {
         ImageView imageView = new ImageView(restartImage);
         imageView.setFitWidth(50);
         imageView.setFitHeight(50);
-        Button restartButton = new Button("");
+        Button restartButton = new Button("Restart");
         restartButton.setGraphic(imageView);
         restartButton.setPrefSize(50, 50);
+        restartButton.setContentDisplay(ContentDisplay.TOP);
         restartButton.setLayoutX(1320);
         restartButton.setLayoutY(20);
         restartButton.setOnAction(new EventHandler<ActionEvent>() {
