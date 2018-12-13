@@ -291,29 +291,26 @@ public class Game extends Pane {
     }
 
     public void dealCards() {
-        Collections.shuffle(deck);
-        List<Card> tableauCards = deck.subList(0, 28);
-        List<Card> stockCards = deck.subList(28, 52);
-        Iterator<Card> tableauIterator = tableauCards.iterator();
-        int[] numOfCardsPerPile = {1, 2, 3, 4, 5, 6, 7};
+        Iterator<Card> deckIterator = deck.iterator();
+        int[] numOfCardsPerPile = {13, 13, 13, 12, 1};
         int[] indexOfPile = {0};
-        tableauIterator.forEachRemaining(card -> {
-            tableauPiles.get(indexOfPile[0]).addCard(card);
-            addMouseEventHandlers(card);
-            getChildren().add(card);
-            if (tableauPiles.get(indexOfPile[0]).getCards().size() == numOfCardsPerPile[indexOfPile[0]]) {
-                card.flip();
-                indexOfPile[0]++;
-            }
-        });
-        Iterator<Card> deckIterator = stockCards.iterator();
         deckIterator.forEachRemaining(card -> {
-            stockPile.addCard(card);
-            addMouseEventHandlers(card);
-            getChildren().add(card);
+            if (indexOfPile[0] == 4) {
+                discardPile.addCard(card);
+                card.flip();
+                addMouseEventHandlers(card);
+                getChildren().add(card);
+            } else {
+                foundationPiles.get(indexOfPile[0]).addCard(card);
+                card.flip();
+                addMouseEventHandlers(card);
+                getChildren().add(card);
+                if (foundationPiles.get(indexOfPile[0]).getCards().size() == numOfCardsPerPile[indexOfPile[0]]) {
+                    indexOfPile[0]++;
+                }
+            }
 
         });
-
     }
 
     public void setTableBackground(Image tableBackground) {
