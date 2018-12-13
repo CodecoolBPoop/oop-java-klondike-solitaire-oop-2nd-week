@@ -143,9 +143,9 @@ public class Game extends Pane {
         if (draggedCards.isEmpty())
             return;
         Card card = (Card) e.getSource();
-        Pile pile = getValidIntersectingPile(card, tableauPiles);
+        Pile pile = getValidIntersectingPile(card, foundationPiles);
         if (pile == null) {
-            pile = getValidIntersectingPile(card, foundationPiles);
+            pile = getValidIntersectingPile(card, tableauPiles);
 
         }
         if (pile != null) {
@@ -213,9 +213,9 @@ public class Game extends Pane {
                 return true;
             }
         } else if (foundationPiles.contains(destPile)) {
-            if(destPile.isEmpty() && card.getRank() == 1) {
+            if(destPile.isEmpty() && card.getRank() == 1 && draggedCards.size() == 1) {
                 return true;
-            } else if (!destPile.isEmpty() && topCard.getSuit() == card.getSuit() && topCard.getRank() + 1 == card.getRank()) {
+            } else if (!destPile.isEmpty() && topCard.getSuit() == card.getSuit() && topCard.getRank() + 1 == card.getRank() && draggedCards.size() == 1) {
                 return true;
             }
         }
