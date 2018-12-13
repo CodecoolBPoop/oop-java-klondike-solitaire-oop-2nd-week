@@ -7,6 +7,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -18,10 +19,8 @@ import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.Pane;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Collections;
+import java.util.*;
+
 import javafx.*;
 
 public class Game extends Pane {
@@ -135,7 +134,7 @@ public class Game extends Pane {
         if(numOfFullPiles == 4) {
             return true;
         }
-        return false;
+        return true;
     }
 
     public Game() {
@@ -225,19 +224,33 @@ public class Game extends Pane {
         MouseUtil.slideToDest(draggedCards, destPile);
         draggedCards.clear();
         if(isGameWon()) {
-            /*
-            Alert alert = new Alert(AlertType.CONFIRMATION);
-            alert.setTitle("Confirmation Dialog");
+
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("");
             alert.setHeaderText("Look, a Confirmation Dialog");
             alert.setContentText("Are you ok with this?");
 
             Optional<ButtonType> result = alert.showAndWait();
             if (result.get() == ButtonType.OK){
-                // ... user chose OK
+                stockPile.clear();
+                discardPile.clear();
+                for (Pile pile : foundationPiles) {
+                    pile.clear();
+                }
+                for (Pile pile : tableauPiles) {
+                    pile.clear();
+                }
+                for (Card crd : deck) {
+                    getChildren().remove(crd);
+                    if (!crd.isFaceDown()) {
+                        crd.flip();
+                    }
+                }
+                dealCards();
             } else {
                 // ... user chose CANCEL or closed the dialog
             }
-            */
+
             return;
         }
     }
@@ -245,6 +258,7 @@ public class Game extends Pane {
 
     private void initButtons() {
 
+        //Image restartImage = new Image("restart.png");
         Image restartImage = new Image(getClass().getResourceAsStream("/button/restart.png"));
         ImageView imageView = new ImageView(restartImage);
         imageView.setFitWidth(50);
