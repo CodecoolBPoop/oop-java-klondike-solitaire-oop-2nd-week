@@ -143,9 +143,9 @@ public class Game extends Pane {
         if (draggedCards.isEmpty())
             return;
         Card card = (Card) e.getSource();
-        Pile pile = getValidIntersectingPile(card, tableauPiles);
+        Pile pile = getValidIntersectingPile(card, foundationPiles);
         if (pile == null) {
-            pile = getValidIntersectingPile(card, foundationPiles);
+            pile = getValidIntersectingPile(card, tableauPiles);
 
         }
         if (pile != null) {
