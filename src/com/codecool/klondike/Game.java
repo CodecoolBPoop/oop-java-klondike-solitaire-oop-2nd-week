@@ -144,12 +144,12 @@ public class Game extends Pane {
 
     public void refillStockFromDiscard() {
         ObservableList<Card> discardedCards = discardPile.getCards();
-        for (int i = discardedCards.size() - 1; i > 0; i--) {
+        for (int i = discardedCards.size() - 1; i >= 0; i--) {
             discardedCards.get(i).flip();
             stockPile.addCard(discardedCards.get(i));
         }
         discardPile.clear();
-        System.out.println("Stock refilled from discard pile.");
+        System.out.println("Stock refilled from discard pile." + stockPile.getCards().size());
     }
 
     public boolean isMoveValid(Card card, Pile destPile) {
